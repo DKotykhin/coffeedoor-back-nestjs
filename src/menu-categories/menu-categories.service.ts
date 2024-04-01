@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
+
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
-import { EntityManager, Repository } from 'typeorm';
 import { LanguageCode, MenuCategory } from './entities/menu-category.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MenuCategoriesService {
@@ -14,39 +15,65 @@ export class MenuCategoriesService {
   ) {}
   async create(createMenuCategoryDto: CreateMenuCategoryDto) {
     const menuCategory = new MenuCategory(createMenuCategoryDto);
-    return this.entityManager.save('MenuCategory', menuCategory);
+    try {
+      return await this.entityManager.save('MenuCategory', menuCategory);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+    }
   }
 
-  async findAll() {
-    const menuCategories = await this.menuCategoryRepository.find({
-      relations: ['menuItems'],
-    });
-    return menuCategories;
+  async findAll(): Promise<MenuCategory[]> {
+    try {
+      return await this.menuCategoryRepository.find({
+        relations: ['menuItems'],
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<MenuCategory> {
     // return await this.entityManager.findOne('MenuCategory', { where: { id } });
-    return await this.menuCategoryRepository.findOne({
-      where: { id },
-      relations: ['menuItems'],
-    });
+    try {
+      return await this.menuCategoryRepository.findOneOrFail({
+        where: { id },
+        relations: ['menuItems'],
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
-  async findByLanguage(language: LanguageCode) {
-    return await this.menuCategoryRepository.find({
-      where: { language },
-      relations: ['menuItems'],
-    });
+  async findByLanguage(language: LanguageCode): Promise<MenuCategory[]> {
+    try {
+      return await this.menuCategoryRepository.find({
+        where: { language },
+        relations: ['menuItems'],
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
-  async update(id: string, updateMenuCategoryDto: UpdateMenuCategoryDto) {
+  async update(
+    id: string,
+    updateMenuCategoryDto: UpdateMenuCategoryDto,
+  ): Promise<MenuCategory> {
     // return await this.menuCategoryRepository.update(id, updateMenuCategoryDto);
-    const menuCategory = await this.findOne(id);
-    Object.assign(menuCategory, updateMenuCategoryDto);
-    return await this.entityManager.save('MenuCategory', menuCategory);
+    try {
+      const menuCategory = await this.findOne(id);
+      Object.assign(menuCategory, updateMenuCategoryDto);
+      return await this.entityManager.save('MenuCategory', menuCategory);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   async remove(id: string) {
-    return await this.menuCategoryRepository.delete(id);
+    try {
+      return await this.menuCategoryRepository.delete(id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }

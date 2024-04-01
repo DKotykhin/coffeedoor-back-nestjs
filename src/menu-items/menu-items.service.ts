@@ -13,22 +13,28 @@ export class MenuItemsService {
     private readonly menuItemRepository: Repository<MenuItem>,
     private readonly entityManager: EntityManager,
   ) {}
-  async create(createMenuItemDto: CreateMenuItemDto) {
+  async create(createMenuItemDto: CreateMenuItemDto): Promise<MenuItem> {
     return await this.entityManager.save(MenuItem, createMenuItemDto);
   }
 
-  async findAll() {
+  async findAll(): Promise<MenuItem[]> {
     return await this.menuItemRepository.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<MenuItem> {
     return await this.menuItemRepository.findOne({
       where: { id },
     });
   }
 
-  async update(id: string, updateMenuItemDto: UpdateMenuItemDto) {
-    return await this.entityManager.update(MenuItem, id, updateMenuItemDto);
+  async update(
+    id: string,
+    updateMenuItemDto: UpdateMenuItemDto,
+  ): Promise<MenuItem> {
+    return await this.entityManager.save(MenuItem, {
+      id,
+      ...updateMenuItemDto,
+    });
   }
 
   async remove(id: string) {
