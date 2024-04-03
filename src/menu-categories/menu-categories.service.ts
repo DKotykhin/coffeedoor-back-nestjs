@@ -4,7 +4,8 @@ import { EntityManager, Repository } from 'typeorm';
 
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
-import { LanguageCode, MenuCategory } from './entities/menu-category.entity';
+import { MenuCategory } from './entities/menu-category.entity';
+import { LanguageCode } from 'src/database/db.enums';
 
 @Injectable()
 export class MenuCategoriesService {

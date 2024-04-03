@@ -12,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: configService.get('PG_USER'),
         password: configService.get('PG_PASSWORD'),
         database: configService.get('PG_DATABASE'),
-        // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        // entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
         ssl: true,

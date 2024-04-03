@@ -1,4 +1,4 @@
-import { LanguageCode } from '../entities/menu-category.entity';
+import { LanguageCode } from 'src/database/db.enums';
 
 export class CreateMenuCategoryDto {
   language: LanguageCode;

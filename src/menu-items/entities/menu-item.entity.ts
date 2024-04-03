@@ -1,9 +1,8 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import {
-  LanguageCode,
-  MenuCategory,
-} from 'src/menu-categories/entities/menu-category.entity';
-import { BaseEntity } from 'src/database/base.entity';
+
+import { MenuCategory } from '../../menu-categories/entities/menu-category.entity';
+import { BaseEntity } from '../../database/base.entity';
+import { LanguageCode } from 'src/database/db.enums';
 
 @Entity()
 export class MenuItem extends BaseEntity {
@@ -25,7 +24,7 @@ export class MenuItem extends BaseEntity {
   @Column({ default: 0 })
   position: number;
 
-  @ManyToOne('MenuCategory', 'menuItems')
+  @ManyToOne('MenuCategory', 'menuItems', { onDelete: 'CASCADE' })
   category: MenuCategory;
 
   constructor(partial: Partial<MenuItem>) {

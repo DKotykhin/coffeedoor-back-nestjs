@@ -1,11 +1,8 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { MenuItem } from 'src/menu-items/entities/menu-item.entity';
-import { BaseEntity } from 'src/database/base.entity';
 
-export enum LanguageCode {
-  UA = 'UA',
-  EN = 'EN',
-}
+import { MenuItem } from '../../menu-items/entities/menu-item.entity';
+import { BaseEntity } from '../../database/base.entity';
+import { LanguageCode } from 'src/database/db.enums';
 
 @Entity()
 export class MenuCategory extends BaseEntity {
