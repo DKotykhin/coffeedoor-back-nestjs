@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -9,10 +9,5 @@ export class CreateUserDto {
   userName: string;
 
   @IsString()
-  @Length(8, 100, { message: 'Password must be at least 8 characters' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
-    message:
-      'Password must contain at least one uppercase letter, one lowercase letter and one number',
-  })
-  password?: string;
+  passwordHash?: string;
 }

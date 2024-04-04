@@ -22,6 +22,15 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   SG_API_KEY: string;
+
+  @IsNotEmpty()
+  JWT_SECRET_KEY: string;
+
+  @IsNotEmpty()
+  FRONTEND_URL: string;
+
+  @IsNotEmpty()
+  SG_EMAIL_ADDRESS: string;
 }
 
 export function validate(config: Record<string, unknown>) {

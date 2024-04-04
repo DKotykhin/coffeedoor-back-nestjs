@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString, Length } from 'class-validator';
+import { IsBoolean, IsString, Length } from 'class-validator';
 
 import { CreateUserDto } from './create-user.dto';
 
@@ -13,4 +13,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @IsString()
   avatarUrl?: string;
+
+  @IsBoolean()
+  isVerified?: boolean;
 }

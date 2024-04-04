@@ -1,4 +1,4 @@
-import { IsString, IsEmail, Length, Matches, Min, Max } from 'class-validator';
+import { IsString, IsEmail, Length, Matches } from 'class-validator';
 
 export class PasswordDto {
   @IsString()
@@ -16,7 +16,6 @@ export class SignInDto extends PasswordDto {
 
 export class SignUpDto extends SignInDto {
   @IsString()
-  @Min(2, { message: 'Name must be at least 2 characters' })
-  @Max(30, { message: 'Name must be at most 30 characters' })
-  readonly name: string;
+  @Length(2, 30, { message: 'Name must be at least 2 characters' })
+  readonly userName: string;
 }

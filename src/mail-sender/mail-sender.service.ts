@@ -10,17 +10,17 @@ export class MailSenderService {
   async sendMail({
     to,
     subject,
-    text,
+    html,
   }: {
     to: string;
     subject: string;
-    text: string;
+    html: string;
   }) {
     const msg = {
       to,
       from: `"CoffeeDoor" <${this.config.get('SG_EMAIL_ADDRESS')}>`,
       subject,
-      text,
+      html,
     };
 
     try {

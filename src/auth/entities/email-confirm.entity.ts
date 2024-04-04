@@ -1,16 +1,20 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '../../database/base.entity';
 import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class EmailConfirm extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   token: string;
 
-  @Column()
-  expiredAt: string;
+  @Column({ nullable: true })
+  expiredAt: Date;
 
-  @OneToOne('User', 'emailConfirm')
+  @Column({ nullable: true })
+  verifiedAt: Date;
+
+  @OneToOne(() => User, (user) => user.emailConfirm, { onDelete: 'CASCADE' })
+  @JoinColumn()
   user: User;
 }
