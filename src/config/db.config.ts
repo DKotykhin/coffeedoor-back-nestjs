@@ -13,5 +13,5 @@ export const dbConfig = (
   // entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
   autoLoadEntities: true,
   synchronize: true,
-  ssl: true,
+  ssl: configService.get('PG_SSL') === 'true' ? true : false,
 });

@@ -6,12 +6,12 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
 import { MailSenderService } from 'src/mail-sender/mail-sender.service';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { UserService } from 'src/user/user.service';
 import { PasswordHash } from 'src/utils/passwordHash';
+import { cryptoToken } from 'src/utils/cryptoToken';
+import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';
-import { cryptoToken } from 'src/utils/cryptoToken';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
     private readonly resetPasswordRepository: Repository<ResetPassword>,
     private readonly mailSenderService: MailSenderService,
     private readonly userService: UserService,
-    private readonly config: ConfigService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -50,7 +50,7 @@ export class AuthService {
               <h4>If you don't restore your password ignore this mail</h4>
               <hr/>
               <br/>
-              <a href='${this.config.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
+              <a href='${this.configService.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
             `,
     });
     try {
@@ -106,7 +106,7 @@ export class AuthService {
                   <h4>If you don't try to login or register, ignore this mail</h4>
                   <hr/>
                   <br/>
-                  <a href='${this.config.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
+                  <a href='${this.configService.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
                 `,
         });
       }
