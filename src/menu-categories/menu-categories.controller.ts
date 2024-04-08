@@ -11,7 +11,7 @@ import {
 import { MenuCategoriesService } from './menu-categories.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
-import { LanguageCode } from 'src/database/db.enums';
+import { LanguageCode } from '../database/db.enums';
 
 @Controller('all-menu')
 export class AllMenuController {

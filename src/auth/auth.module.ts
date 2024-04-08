@@ -3,14 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { UserService } from '../user/user.service';
+import { jwtTokenConfig } from '../config/jwt-token.config';
+import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { MailSenderService } from 'src/mail-sender/mail-sender.service';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/entities/user.entity';
 import { ResetPassword } from './entities/reset-password.entity';
 import { EmailConfirm } from './entities/email-confirm.entity';
-import { jwtTokenConfig } from 'src/config/jwt-token.config';
 
 @Module({
   imports: [

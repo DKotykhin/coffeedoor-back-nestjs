@@ -5,10 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
-import { MailSenderService } from 'src/mail-sender/mail-sender.service';
-import { UserService } from 'src/user/user.service';
-import { PasswordHash } from 'src/utils/passwordHash';
-import { cryptoToken } from 'src/utils/cryptoToken';
+import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { UserService } from '../user/user.service';
+import { PasswordHash } from '../utils/passwordHash';
+import { cryptoToken } from '../utils/cryptoToken';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';

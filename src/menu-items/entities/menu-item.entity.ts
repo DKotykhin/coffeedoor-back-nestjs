@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { MenuCategory } from '../../menu-categories/entities/menu-category.entity';
 import { BaseEntity } from '../../database/base.entity';
-import { LanguageCode } from 'src/database/db.enums';
+import { LanguageCode } from '../../database/db.enums';
 
 @Entity()
 export class MenuItem extends BaseEntity {

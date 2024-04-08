@@ -1,9 +1,9 @@
 import { Column, Entity, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '../../database/base.entity';
-import { RoleTypes } from 'src/database/db.enums';
-import { EmailConfirm } from 'src/auth/entities/email-confirm.entity';
-import { ResetPassword } from 'src/auth/entities/reset-password.entity';
+import { RoleTypes } from '../../database/db.enums';
+import { EmailConfirm } from '../../auth/entities/email-confirm.entity';
+import { ResetPassword } from '../../auth/entities/reset-password.entity';
 
 @Entity()
 export class User extends BaseEntity {

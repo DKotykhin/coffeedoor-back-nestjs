@@ -1,7 +1,6 @@
 FROM node:20
 
 # Create app directory
-RUN command mkdir -p /app
 WORKDIR /app
 
 # Install app dependencies
@@ -16,5 +15,5 @@ COPY . /app
 # Build the app
 RUN npm run build
 
-EXPOSE 3003
+EXPOSE 4004
 CMD [ "npm", "start" ]

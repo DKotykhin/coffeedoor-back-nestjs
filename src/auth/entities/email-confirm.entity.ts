@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '../../database/base.entity';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class EmailConfirm extends BaseEntity {
