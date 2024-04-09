@@ -13,7 +13,8 @@ RUN npm install
 COPY . /app
 
 # Build the app
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 4004
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "start:dev" ]
+# CMD [ "npm", "start" ]
