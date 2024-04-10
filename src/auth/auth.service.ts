@@ -9,7 +9,7 @@ import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { UserService } from '../user/user.service';
 import { PasswordHash } from '../utils/passwordHash';
 import { cryptoToken } from '../utils/cryptoToken';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import { EmailDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';
 
@@ -56,7 +56,7 @@ export class AuthService {
     try {
       await this.emailConfirmRepository.save({
         user,
-        token: token,
+        token,
         expiredAt: new Date(
           new Date().getTime() + 1000 * 60 * 60 * 24,
         ).toISOString(),
@@ -165,6 +165,72 @@ export class AuthService {
       console.log(error);
       throw new HttpException(
         'Error while confirming email',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return true;
+  }
+
+  async resetPassword(emailDto: EmailDto) {
+    const { email } = emailDto;
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    const token = cryptoToken();
+    this.mailSenderService.sendMail({
+      to: user.email,
+      subject: 'Reset password',
+      html: `
+              <h2>Please, follow the link to set new password</h2>
+              <h4>If you don't restore your password ignore this mail</h4>
+              <hr/>
+              <br/>
+              <a href='${this.configService.get('FRONTEND_URL')}/reset-password/${token}'>Link for password reset</a>
+            `,
+    });
+    try {
+      await this.resetPasswordRepository.save({
+        user,
+        token,
+        expiredAt: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+      });
+    } catch (error) {
+      throw new HttpException(
+        'Error while saving reset password token',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return true;
+  }
+
+  async setNewPassword(token: string, password: string) {
+    if (!token) {
+      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+    }
+    const resetPassword = await this.resetPasswordRepository.findOne({
+      where: { token },
+      relations: ['user'],
+    });
+    if (!resetPassword) {
+      throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+    }
+    if (resetPassword.expiredAt < new Date()) {
+      throw new HttpException('Token expired', HttpStatus.BAD_REQUEST);
+    }
+    const passwordHash = await PasswordHash.create(password);
+    try {
+      await this.userService.update(resetPassword.user.id, {
+        passwordHash,
+      });
+      await this.resetPasswordRepository.update(resetPassword.id, {
+        token: null,
+        expiredAt: null,
+        isUsed: new Date(),
+      });
+    } catch (error) {
+      throw new HttpException(
+        'Error while setting new password',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

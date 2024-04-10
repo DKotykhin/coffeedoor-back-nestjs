@@ -33,7 +33,7 @@ export class MenuCategoriesService {
     }
   }
 
-  async findOne(id: string): Promise<MenuCategory> {
+  async findById(id: string): Promise<MenuCategory> {
     // return await this.entityManager.findOne('MenuCategory', { where: { id } });
     try {
       return await this.menuCategoryRepository.findOneOrFail({
@@ -62,7 +62,7 @@ export class MenuCategoriesService {
   ): Promise<MenuCategory> {
     // return await this.menuCategoryRepository.update(id, updateMenuCategoryDto);
     try {
-      const menuCategory = await this.findOne(id);
+      const menuCategory = await this.findById(id);
       Object.assign(menuCategory, updateMenuCategoryDto);
       return await this.entityManager.save('MenuCategory', menuCategory);
     } catch (error) {
@@ -70,9 +70,13 @@ export class MenuCategoriesService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<boolean> {
     try {
-      return await this.menuCategoryRepository.delete(id);
+      const result = await this.menuCategoryRepository.delete(id);
+      if (result.affected === 0) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+      return true;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

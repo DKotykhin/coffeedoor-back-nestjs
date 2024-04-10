@@ -2,7 +2,7 @@ import { Controller, Post, Body, Res, Get, Param } from '@nestjs/common';
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import { EmailDto, PasswordDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
@@ -25,5 +25,18 @@ export class AuthController {
   @Get('/confirm-email/:token')
   confirmEmail(@Param('token') token: string): Promise<boolean> {
     return this.authService.confirmEmail(token);
+  }
+
+  @Post('/reset-password')
+  resetPassword(@Body() emailDto: EmailDto): Promise<boolean> {
+    return this.authService.resetPassword(emailDto);
+  }
+
+  @Post('/new-password/:token')
+  setNewPassword(
+    @Param('token') token: string,
+    @Body() newPassword: PasswordDto,
+  ): Promise<boolean> {
+    return this.authService.setNewPassword(token, newPassword.password);
   }
 }

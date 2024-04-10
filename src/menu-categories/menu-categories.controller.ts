@@ -18,8 +18,8 @@ export class AllMenuController {
   constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
 
   @Get()
-  async findByLanguage(@Query('language') language: LanguageCode) {
-    return await this.menuCategoriesService.findByLanguage(language);
+  findByLanguage(@Query('language') language: LanguageCode) {
+    return this.menuCategoriesService.findByLanguage(language);
   }
 }
 
@@ -28,30 +28,30 @@ export class MenuCategoriesController {
   constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
 
   @Post()
-  async create(@Body() createMenuCategoryDto: CreateMenuCategoryDto) {
-    return await this.menuCategoriesService.create(createMenuCategoryDto);
+  create(@Body() createMenuCategoryDto: CreateMenuCategoryDto) {
+    return this.menuCategoriesService.create(createMenuCategoryDto);
   }
 
   @Get()
-  async findAll() {
-    return await this.menuCategoriesService.findAll();
+  findAll() {
+    return this.menuCategoriesService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.menuCategoriesService.findOne(id);
+  findById(@Param('id') id: string) {
+    return this.menuCategoriesService.findById(id);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    return await this.menuCategoriesService.update(id, updateMenuCategoryDto);
+    return this.menuCategoriesService.update(id, updateMenuCategoryDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.menuCategoriesService.remove(id);
+  remove(@Param('id') id: string) {
+    return this.menuCategoriesService.remove(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
@@ -14,30 +14,54 @@ export class MenuItemsService {
     private readonly entityManager: EntityManager,
   ) {}
   async create(createMenuItemDto: CreateMenuItemDto): Promise<MenuItem> {
-    return await this.entityManager.save(MenuItem, createMenuItemDto);
+    try {
+      return await this.entityManager.save(MenuItem, createMenuItemDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+    }
   }
 
   async findAll(): Promise<MenuItem[]> {
-    return await this.menuItemRepository.find();
+    try {
+      return await this.menuItemRepository.find();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
-  async findOne(id: string): Promise<MenuItem> {
-    return await this.menuItemRepository.findOne({
-      where: { id },
-    });
+  async findById(id: string): Promise<MenuItem> {
+    try {
+      return await this.menuItemRepository.findOne({
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   async update(
     id: string,
     updateMenuItemDto: UpdateMenuItemDto,
   ): Promise<MenuItem> {
-    return await this.entityManager.save(MenuItem, {
-      id,
-      ...updateMenuItemDto,
-    });
+    try {
+      return await this.entityManager.save(MenuItem, {
+        id,
+        ...updateMenuItemDto,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
-  async remove(id: string) {
-    return await this.menuItemRepository.delete(id);
+  async remove(id: string): Promise<boolean> {
+    try {
+      const result = await this.menuItemRepository.delete(id);
+      if (result.affected === 0) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+      return true;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }

@@ -26,8 +26,8 @@ export class MenuItemsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.menuItemsService.findOne(id);
+  findById(@Param('id') id: string) {
+    return this.menuItemsService.findById(id);
   }
 
   @Patch(':id')

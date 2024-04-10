@@ -9,6 +9,10 @@ export class PasswordDto {
   })
   password?: string;
 }
+export class EmailDto {
+  @IsEmail()
+  readonly email: string;
+}
 export class SignInDto extends PasswordDto {
   @IsEmail()
   readonly email: string;
