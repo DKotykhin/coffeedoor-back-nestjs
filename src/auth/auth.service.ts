@@ -7,9 +7,11 @@ import { Response } from 'express';
 
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { UserService } from '../user/user.service';
+import { User } from '../user/entities/user.entity';
 import { PasswordHash } from '../utils/passwordHash';
 import { cryptoToken } from '../utils/cryptoToken';
 import { EmailDto, SignInDto, SignUpDto } from './dto/auth.dto';
+import { JwtPayload } from './dto/jwtPayload.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';
 
@@ -26,7 +28,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto): Promise<Partial<User>> {
     const { email, password, userName } = signUpDto;
     const candidate = await this.userService.findByEmail(email);
     if (candidate) {
@@ -81,7 +83,10 @@ export class AuthService {
     };
   }
 
-  async signIn(signInDto: SignInDto, response: Response) {
+  async signIn(
+    signInDto: SignInDto,
+    response: Response,
+  ): Promise<Partial<User>> {
     const user = await this.userService.findByEmail(signInDto.email);
     if (!user) {
       throw new HttpException(
@@ -115,8 +120,6 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const auth_token = this.jwtService.sign({ _id: user.id, role: user.role });
-    response.cookie('auth_token', auth_token, { httpOnly: true });
     const {
       email,
       address,
@@ -127,6 +130,10 @@ export class AuthService {
       userName,
       role,
     } = user;
+
+    const payload: JwtPayload = { email };
+    const auth_token = this.jwtService.sign(payload);
+    response.cookie('auth_token', auth_token, { httpOnly: true });
 
     return {
       email,

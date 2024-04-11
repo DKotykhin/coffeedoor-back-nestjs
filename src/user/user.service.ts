@@ -15,19 +15,20 @@ export class UserService {
   ) {}
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const user = new User(createUserDto);
-      return await this.entityManager.save(User, user);
+      // const user = new User(createUserDto);
+      // return await this.entityManager.save(User, user);
+      return await this.entityManager.save(User, createUserDto);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
   async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOneOrFail({ where: { email } });
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async findById(id: string): Promise<User> {
-    return await this.userRepository.findOneOrFail({
+    return await this.userRepository.findOne({
       where: { id },
     });
   }

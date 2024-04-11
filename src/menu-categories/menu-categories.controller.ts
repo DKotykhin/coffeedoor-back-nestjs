@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+import { LanguageCode } from '../database/db.enums';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../user/entities/user.entity';
 import { MenuCategoriesService } from './menu-categories.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
-import { LanguageCode } from '../database/db.enums';
 
 @Controller('all-menu')
 export class AllMenuController {
@@ -24,6 +29,7 @@ export class AllMenuController {
 }
 
 @Controller('menu-categories')
+@UseGuards(AuthGuard('jwt'))
 export class MenuCategoriesController {
   constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
 
@@ -33,7 +39,8 @@ export class MenuCategoriesController {
   }
 
   @Get()
-  findAll() {
+  findAll(@GetUser() user: Partial<User>) {
+    console.log(user);
     return this.menuCategoriesService.findAll();
   }
 

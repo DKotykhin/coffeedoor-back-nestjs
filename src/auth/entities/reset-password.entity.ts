@@ -14,7 +14,7 @@ export class ResetPassword extends BaseEntity {
   @Column({ nullable: true })
   isUsed: Date;
 
-  @OneToOne(() => User, (user) => user.emailConfirm, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.resetPassword, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 }

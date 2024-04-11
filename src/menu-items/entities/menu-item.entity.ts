@@ -24,7 +24,9 @@ export class MenuItem extends BaseEntity {
   @Column({ default: 0 })
   position: number;
 
-  @ManyToOne('MenuCategory', 'menuItems', { onDelete: 'CASCADE' })
+  @ManyToOne(() => MenuCategory, (item) => item.menuItems, {
+    onDelete: 'CASCADE',
+  })
   category: MenuCategory;
 
   constructor(partial: Partial<MenuItem>) {
