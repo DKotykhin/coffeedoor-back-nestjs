@@ -14,4 +14,9 @@ export const dbConfig = async (
   autoLoadEntities: true,
   synchronize: true,
   ssl: configService.get('PG_SSL') === 'true' ? true : false,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 });
