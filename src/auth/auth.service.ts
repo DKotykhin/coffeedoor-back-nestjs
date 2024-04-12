@@ -147,7 +147,7 @@ export class AuthService {
     };
   }
 
-  async confirmEmail(token: string) {
+  async confirmEmail(token: string): Promise<boolean> {
     if (!token) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -178,7 +178,7 @@ export class AuthService {
     return true;
   }
 
-  async resetPassword(emailDto: EmailDto) {
+  async resetPassword(emailDto: EmailDto): Promise<boolean> {
     const { email } = emailDto;
     const user = await this.userService.findByEmail(email);
     if (!user) {
@@ -211,7 +211,7 @@ export class AuthService {
     return true;
   }
 
-  async setNewPassword(token: string, password: string) {
+  async setNewPassword(token: string, password: string): Promise<boolean> {
     if (!token) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }

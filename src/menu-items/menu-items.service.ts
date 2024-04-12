@@ -53,13 +53,13 @@ export class MenuItemsService {
     }
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<string> {
     try {
       const result = await this.menuItemRepository.delete(id);
       if (result.affected === 0) {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
-      return true;
+      return id;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

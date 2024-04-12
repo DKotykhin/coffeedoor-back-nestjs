@@ -15,8 +15,9 @@ export const dbConfig = async (
   synchronize: true,
   ssl: configService.get('PG_SSL') === 'true' ? true : false,
   extra: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    ssl:
+      configService.get('PG_SSL') === 'true'
+        ? { rejectUnauthorized: false }
+        : null,
   },
 });

@@ -9,7 +9,10 @@ describe('MenuItemsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MenuItemsController],
       providers: [MenuItemsService],
-    }).compile();
+    })
+      .overrideProvider(MenuItemsService)
+      .useValue({})
+      .compile();
 
     controller = module.get<MenuItemsController>(MenuItemsController);
   });

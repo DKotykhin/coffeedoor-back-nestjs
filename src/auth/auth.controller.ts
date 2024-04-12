@@ -1,13 +1,29 @@
-import { Controller, Post, Body, Res, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 
+import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { EmailDto, PasswordDto, SignInDto, SignUpDto } from './dto/auth.dto';
-import { User } from '../user/entities/user.entity';
+import { GetUser } from './get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/me')
+  getUserByToken(@GetUser() user: Partial<User>): Partial<User> {
+    return user;
+  }
 
   @Post('/sign-up')
   signUp(@Body() signUpDto: SignUpDto): Promise<Partial<User>> {

@@ -4,9 +4,7 @@ import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class MailSenderService {
-  constructor(private readonly config: ConfigService) {
-    sgMail.setApiKey(this.config.get('SG_API_KEY'));
-  }
+  constructor(private readonly configService: ConfigService) {}
   async sendMail({
     to,
     subject,
@@ -16,9 +14,10 @@ export class MailSenderService {
     subject: string;
     html: string;
   }) {
+    sgMail.setApiKey(this.configService.get('SG_API_KEY'));
     const msg = {
       to,
-      from: `"CoffeeDoor" <${this.config.get('SG_EMAIL_ADDRESS')}>`,
+      from: `"CoffeeDoor" <${this.configService.get('SG_EMAIL_ADDRESS')}>`,
       subject,
       html,
     };

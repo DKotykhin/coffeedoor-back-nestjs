@@ -33,7 +33,7 @@ export class UserService {
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {
       return await this.entityManager.save(User, {
         id,
@@ -44,13 +44,13 @@ export class UserService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     try {
       const result = await this.userRepository.delete(id);
       if (result.affected === 0) {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
-      return true;
+      return id;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
