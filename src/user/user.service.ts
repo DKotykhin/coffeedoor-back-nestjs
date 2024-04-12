@@ -13,6 +13,11 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly entityManager: EntityManager,
   ) {}
+
+  async findByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       // const user = new User(createUserDto);
@@ -21,16 +26,6 @@ export class UserService {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-  }
-
-  async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email } });
-  }
-
-  async findById(id: string): Promise<User> {
-    return await this.userRepository.findOne({
-      where: { id },
-    });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

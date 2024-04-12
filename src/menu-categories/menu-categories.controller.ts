@@ -11,7 +11,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { LanguageCode } from '../database/db.enums';
+import { LanguageCode, RoleTypes } from '../database/db.enums';
+import { HasRoles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { MenuCategoriesService } from './menu-categories.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
@@ -30,16 +32,10 @@ export class AllMenuController {
 }
 
 @Controller('menu-categories')
-@UseGuards(AuthGuard('jwt'))
+@HasRoles(RoleTypes.ADMIN, RoleTypes.SUBADMIN)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class MenuCategoriesController {
   constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
-
-  @Post()
-  create(
-    @Body() createMenuCategoryDto: CreateMenuCategoryDto,
-  ): Promise<MenuCategory> {
-    return this.menuCategoriesService.create(createMenuCategoryDto);
-  }
 
   @Get()
   findAll(): Promise<MenuCategory[]> {
@@ -49,6 +45,13 @@ export class MenuCategoriesController {
   @Get(':id')
   findById(@Param('id') id: string): Promise<MenuCategory> {
     return this.menuCategoriesService.findById(id);
+  }
+
+  @Post()
+  create(
+    @Body() createMenuCategoryDto: CreateMenuCategoryDto,
+  ): Promise<MenuCategory> {
+    return this.menuCategoriesService.create(createMenuCategoryDto);
   }
 
   @Patch(':id')
