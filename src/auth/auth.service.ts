@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
 import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { AvatarService } from '../avatar/avatar.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { PasswordHash } from '../utils/passwordHash';
@@ -26,7 +27,15 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly avatarService: AvatarService,
   ) {}
+
+  async getUserByToken(user: Partial<User>): Promise<Partial<User>> {
+    if (user.avatarUrl) {
+      user.avatarUrl = await this.avatarService.getImageUrl(user.avatarUrl);
+    }
+    return user;
+  }
 
   async signUp(signUpDto: SignUpDto): Promise<Partial<User>> {
     const { email, password, userName } = signUpDto;
@@ -119,6 +128,10 @@ export class AuthService {
         'Please confirm your email address',
         HttpStatus.BAD_REQUEST,
       );
+    }
+
+    if (user.avatarUrl) {
+      user.avatarUrl = await this.avatarService.getImageUrl(user.avatarUrl);
     }
     const {
       email,

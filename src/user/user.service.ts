@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
+import { AvatarService } from '../avatar/avatar.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -12,6 +13,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly entityManager: EntityManager,
+    private readonly avatarService: AvatarService,
   ) {}
 
   async findByEmail(email: string): Promise<User> {
@@ -49,5 +51,36 @@ export class UserService {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
+  }
+
+  async uploadAvatar(id: string, avatar: Express.Multer.File) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    try {
+      const fileName = await this.avatarService.createAvatar(id, avatar);
+      user.avatarUrl = fileName;
+      await this.entityManager.save(User, user);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return { message: 'Avatar uploaded' };
+  }
+
+  async deleteAvatar(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    try {
+      await this.avatarService.deleteAvatar(user.avatarUrl);
+      user.avatarUrl = null;
+      await this.entityManager.save(User, user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return { message: 'Avatar deleted' };
   }
 }

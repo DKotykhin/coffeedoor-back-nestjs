@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
 import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { AvatarService } from '../avatar/avatar.service';
 import { UserService } from '../user/user.service';
 import { jwtTokenConfig } from '../config/jwt-token.config';
 import { User } from '../user/entities/user.entity';
@@ -25,7 +26,13 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailSenderService, UserService, JwtStrategy],
+  providers: [
+    AuthService,
+    MailSenderService,
+    UserService,
+    AvatarService,
+    JwtStrategy,
+  ],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

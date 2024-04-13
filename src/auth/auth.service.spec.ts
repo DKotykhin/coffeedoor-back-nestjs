@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { UserService } from '../user/user.service';
+import { AvatarService } from '../avatar/avatar.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -31,6 +32,10 @@ describe('AuthService', () => {
         },
         {
           provide: ConfigService,
+          useValue: {},
+        },
+        {
+          provide: AvatarService,
           useValue: {},
         },
         {

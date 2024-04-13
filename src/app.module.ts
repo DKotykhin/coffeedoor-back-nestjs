@@ -8,6 +8,7 @@ import { validate } from './utils/env.validator';
 import { MailSenderModule } from './mail-sender/mail-sender.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { AvatarModule } from './avatar/avatar.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     MailSenderModule,
     UserModule,
     AuthModule,
+    AvatarModule,
   ],
   controllers: [],
   providers: [],
