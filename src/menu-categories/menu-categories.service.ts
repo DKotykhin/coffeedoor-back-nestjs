@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
+import { LanguageCode } from '../database/db.enums';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
-import { LanguageCode } from '../database/db.enums';
 
 @Injectable()
 export class MenuCategoriesService {
@@ -14,12 +14,18 @@ export class MenuCategoriesService {
     private readonly menuCategoryRepository: Repository<MenuCategory>,
     private readonly entityManager: EntityManager,
   ) {}
-  async create(createMenuCategoryDto: CreateMenuCategoryDto) {
-    const menuCategory = new MenuCategory(createMenuCategoryDto);
+
+  async findByLanguage(language: LanguageCode): Promise<MenuCategory[]> {
     try {
-      return await this.entityManager.save('MenuCategory', menuCategory);
+      return await this.menuCategoryRepository.find({
+        where: {
+          language,
+          hidden: false,
+        },
+        relations: ['menuItems'],
+      });
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -45,14 +51,12 @@ export class MenuCategoriesService {
     }
   }
 
-  async findByLanguage(language: LanguageCode): Promise<MenuCategory[]> {
+  async create(createMenuCategoryDto: CreateMenuCategoryDto) {
+    const menuCategory = new MenuCategory(createMenuCategoryDto);
     try {
-      return await this.menuCategoryRepository.find({
-        where: { language },
-        relations: ['menuItems'],
-      });
+      return await this.entityManager.save('MenuCategory', menuCategory);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
     }
   }
 

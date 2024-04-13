@@ -14,6 +14,7 @@ import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { EmailDto, PasswordDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { GetUser } from './get-user.decorator';
+import { StatusResponseDto } from './dto/status-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,12 +40,12 @@ export class AuthController {
   }
 
   @Get('/confirm-email/:token')
-  confirmEmail(@Param('token') token: string): Promise<boolean> {
+  confirmEmail(@Param('token') token: string): Promise<StatusResponseDto> {
     return this.authService.confirmEmail(token);
   }
 
   @Post('/reset-password')
-  resetPassword(@Body() emailDto: EmailDto): Promise<boolean> {
+  resetPassword(@Body() emailDto: EmailDto): Promise<StatusResponseDto> {
     return this.authService.resetPassword(emailDto);
   }
 
@@ -52,7 +53,7 @@ export class AuthController {
   setNewPassword(
     @Param('token') token: string,
     @Body() newPassword: PasswordDto,
-  ): Promise<boolean> {
+  ): Promise<StatusResponseDto> {
     return this.authService.setNewPassword(token, newPassword.password);
   }
 }

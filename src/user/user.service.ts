@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 import { AvatarService } from '../avatar/avatar.service';
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
+import { PasswordHash } from '../utils/passwordHash';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -53,7 +55,60 @@ export class UserService {
     }
   }
 
-  async uploadAvatar(id: string, avatar: Express.Multer.File) {
+  async confirmPassword(
+    id: string,
+    password: string,
+  ): Promise<StatusResponseDto> {
+    if (!password) {
+      throw new HttpException('Password is required', HttpStatus.BAD_REQUEST);
+    }
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await PasswordHash.compare(
+      password,
+      user.passwordHash,
+      'Password not match',
+    );
+    return {
+      status: true,
+      message: 'Password confirmed',
+    };
+  }
+
+  async changePassword(
+    id: string,
+    newPassword: string,
+  ): Promise<StatusResponseDto> {
+    if (!newPassword) {
+      throw new HttpException(
+        'New password is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await PasswordHash.same(
+      newPassword,
+      user.passwordHash,
+      'The same password!',
+    );
+    const passwordHash = await PasswordHash.create(newPassword);
+    user.passwordHash = passwordHash;
+    await this.entityManager.save(User, user);
+    return {
+      status: true,
+      message: 'Password successfully changed',
+    };
+  }
+
+  async uploadAvatar(
+    id: string,
+    avatar: Express.Multer.File,
+  ): Promise<StatusResponseDto> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -66,10 +121,13 @@ export class UserService {
       console.log(error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return { message: 'Avatar uploaded' };
+    return {
+      status: true,
+      message: 'Avatar successfully uploaded',
+    };
   }
 
-  async deleteAvatar(id: string) {
+  async deleteAvatar(id: string): Promise<StatusResponseDto> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -81,6 +139,9 @@ export class UserService {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return { message: 'Avatar deleted' };
+    return {
+      status: true,
+      message: 'Avatar successfully deleted',
+    };
   }
 }

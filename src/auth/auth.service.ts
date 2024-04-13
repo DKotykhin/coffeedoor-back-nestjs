@@ -15,6 +15,7 @@ import { EmailDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { JwtPayload } from './dto/jwtPayload.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';
+import { StatusResponseDto } from './dto/status-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -161,7 +162,7 @@ export class AuthService {
     };
   }
 
-  async confirmEmail(token: string): Promise<boolean> {
+  async confirmEmail(token: string): Promise<StatusResponseDto> {
     if (!token) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -188,10 +189,13 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    return true;
+    return {
+      status: true,
+      message: 'Email successfully confirmed',
+    };
   }
 
-  async resetPassword(emailDto: EmailDto): Promise<boolean> {
+  async resetPassword(emailDto: EmailDto): Promise<StatusResponseDto> {
     const { email } = emailDto;
     const user = await this.userService.findByEmail(email);
     if (!user) {
@@ -221,10 +225,16 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    return true;
+    return {
+      status: true,
+      message: 'Reset password link sent to email',
+    };
   }
 
-  async setNewPassword(token: string, password: string): Promise<boolean> {
+  async setNewPassword(
+    token: string,
+    password: string,
+  ): Promise<StatusResponseDto> {
     if (!token) {
       throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
     }
@@ -254,6 +264,9 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    return true;
+    return {
+      status: true,
+      message: 'Password successfully changed',
+    };
   }
 }
