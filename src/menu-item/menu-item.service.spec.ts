@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from 'typeorm';
 
-import { MenuItemsService } from './menu-items.service';
+import { MenuItemService } from './menu-item.service';
 
-describe('MenuItemsService', () => {
-  let service: MenuItemsService;
+describe('MenuItemService', () => {
+  let service: MenuItemService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MenuItemsService,
+        MenuItemService,
         {
           provide: 'MenuItemRepository',
           useValue: {},
@@ -21,7 +21,7 @@ describe('MenuItemsService', () => {
       ],
     }).compile();
 
-    service = module.get<MenuItemsService>(MenuItemsService);
+    service = module.get<MenuItemService>(MenuItemService);
   });
 
   it('should be defined', () => {

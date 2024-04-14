@@ -31,10 +31,14 @@ export class User extends BaseEntity {
   @Column({ type: 'enum', enum: RoleTypes, default: RoleTypes.USER })
   role: RoleTypes;
 
-  @OneToOne('EmailConfirm', 'user', { cascade: true })
+  @OneToOne(() => EmailConfirm, (emailConfirm) => emailConfirm.user, {
+    cascade: true,
+  })
   emailConfirm: EmailConfirm;
 
-  @OneToOne('ResetPassword', 'user', { cascade: true })
+  @OneToOne(() => ResetPassword, (resetPassword) => resetPassword.user, {
+    cascade: true,
+  })
   resetPassword: ResetPassword;
 
   constructor(partial: Partial<User>) {

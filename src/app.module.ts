@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { DatabaseModule } from './database/database.module';
-import { MenuItemsModule } from './menu-items/menu-items.module';
-import { MenuCategoriesModule } from './menu-categories/menu-categories.module';
+import { MenuItemModule } from './menu-item/menu-item.module';
+import { MenuCategoryModule } from './menu-category/menu-category.module';
 import { validate } from './utils/env.validator';
 import { MailSenderModule } from './mail-sender/mail-sender.module';
 import { UserModule } from './user/user.module';
@@ -18,8 +18,8 @@ import { AvatarModule } from './avatar/avatar.module';
       validate,
     }),
     DatabaseModule,
-    MenuItemsModule,
-    MenuCategoriesModule,
+    MenuItemModule,
+    MenuCategoryModule,
     MailSenderModule,
     UserModule,
     AuthModule,

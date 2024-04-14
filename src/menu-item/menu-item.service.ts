@@ -7,7 +7,7 @@ import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
 import { MenuItem } from './entities/menu-item.entity';
 
 @Injectable()
-export class MenuItemsService {
+export class MenuItemService {
   constructor(
     @InjectRepository(MenuItem)
     private readonly menuItemRepository: Repository<MenuItem>,

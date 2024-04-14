@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from 'typeorm';
 
 import { LanguageCode } from '../database/db.enums';
-import { MenuCategoriesService } from './menu-categories.service';
+import { MenuCategoryService } from './menu-category.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
 
@@ -23,13 +23,13 @@ const mockMenuCategoryRepository = () => ({
   delete: jest.fn((id: string) => id),
 });
 
-describe('MenuCategoriesService', () => {
-  let service: MenuCategoriesService;
+describe('MenuCategoryService', () => {
+  let service: MenuCategoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MenuCategoriesService,
+        MenuCategoryService,
         {
           provide: 'MenuCategoryRepository',
           useFactory: mockMenuCategoryRepository,
@@ -41,7 +41,7 @@ describe('MenuCategoriesService', () => {
       ],
     }).compile();
 
-    service = module.get<MenuCategoriesService>(MenuCategoriesService);
+    service = module.get<MenuCategoryService>(MenuCategoryService);
   });
 
   it('should be defined', () => {

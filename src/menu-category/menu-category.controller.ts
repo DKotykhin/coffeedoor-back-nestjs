@@ -14,44 +14,44 @@ import { AuthGuard } from '@nestjs/passport';
 import { LanguageCode, RoleTypes } from '../database/db.enums';
 import { HasRoles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { MenuCategoriesService } from './menu-categories.service';
+import { MenuCategoryService } from './menu-category.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
 
 @Controller('all-menu')
 export class AllMenuController {
-  constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
+  constructor(private readonly menuCategoryService: MenuCategoryService) {}
 
   @Get()
   findByLanguage(
     @Query('language') language: LanguageCode,
   ): Promise<MenuCategory[]> {
-    return this.menuCategoriesService.findByLanguage(language);
+    return this.menuCategoryService.findByLanguage(language);
   }
 }
 
 @Controller('menu-categories')
 @HasRoles(RoleTypes.ADMIN, RoleTypes.SUBADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-export class MenuCategoriesController {
-  constructor(private readonly menuCategoriesService: MenuCategoriesService) {}
+export class MenuCategoryController {
+  constructor(private readonly menuCategoryService: MenuCategoryService) {}
 
   @Get()
   findAll(): Promise<MenuCategory[]> {
-    return this.menuCategoriesService.findAll();
+    return this.menuCategoryService.findAll();
   }
 
   @Get(':id')
   findById(@Param('id') id: string): Promise<MenuCategory> {
-    return this.menuCategoriesService.findById(id);
+    return this.menuCategoryService.findById(id);
   }
 
   @Post()
   create(
     @Body() createMenuCategoryDto: CreateMenuCategoryDto,
   ): Promise<MenuCategory> {
-    return this.menuCategoriesService.create(createMenuCategoryDto);
+    return this.menuCategoryService.create(createMenuCategoryDto);
   }
 
   @Patch(':id')
@@ -59,11 +59,11 @@ export class MenuCategoriesController {
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ): Promise<MenuCategory> {
-    return this.menuCategoriesService.update(id, updateMenuCategoryDto);
+    return this.menuCategoryService.update(id, updateMenuCategoryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<string> {
-    return this.menuCategoriesService.remove(id);
+    return this.menuCategoryService.remove(id);
   }
 }
