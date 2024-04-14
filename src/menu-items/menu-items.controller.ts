@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -25,8 +26,10 @@ export class MenuItemsController {
   constructor(private readonly menuItemsService: MenuItemsService) {}
 
   @Get()
-  findAll(): Promise<MenuItem[]> {
-    return this.menuItemsService.findAll();
+  findAllByCategoryId(
+    @Query('categoryId') categoryId: string,
+  ): Promise<MenuItem[]> {
+    return this.menuItemsService.findAllByCategoryId(categoryId);
   }
 
   @Get(':id')

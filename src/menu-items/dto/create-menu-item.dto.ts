@@ -32,5 +32,7 @@ export class CreateMenuItemDto {
   @IsNumber()
   position: number;
 
+  @IsNotEmpty()
+  @IsString()
   categoryId: string;
 }

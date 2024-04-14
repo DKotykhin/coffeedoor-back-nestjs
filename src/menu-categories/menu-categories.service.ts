@@ -23,6 +23,12 @@ export class MenuCategoriesService {
           hidden: false,
         },
         relations: ['menuItems'],
+        order: {
+          position: 'ASC',
+          menuItems: {
+            position: 'ASC',
+          },
+        },
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);

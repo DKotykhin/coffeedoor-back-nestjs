@@ -13,17 +13,15 @@ export class MenuItemsService {
     private readonly menuItemRepository: Repository<MenuItem>,
     private readonly entityManager: EntityManager,
   ) {}
-  async create(createMenuItemDto: CreateMenuItemDto): Promise<MenuItem> {
-    try {
-      return await this.entityManager.save(MenuItem, createMenuItemDto);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
-    }
-  }
 
-  async findAll(): Promise<MenuItem[]> {
+  async findAllByCategoryId(categoryId: string): Promise<MenuItem[]> {
     try {
-      return await this.menuItemRepository.find();
+      return await this.menuItemRepository.find({
+        where: { category: { id: categoryId } },
+        order: {
+          position: 'ASC',
+        },
+      });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
@@ -36,6 +34,17 @@ export class MenuItemsService {
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async create(createMenuItemDto: CreateMenuItemDto): Promise<MenuItem> {
+    try {
+      return await this.entityManager.save(MenuItem, {
+        ...createMenuItemDto,
+        category: { id: createMenuItemDto.categoryId },
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.FORBIDDEN);
     }
   }
 

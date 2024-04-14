@@ -26,6 +26,7 @@ export class MenuItem extends BaseEntity {
 
   @ManyToOne(() => MenuCategory, (item) => item.menuItems, {
     onDelete: 'CASCADE',
+    nullable: false,
   })
   category: MenuCategory;
 

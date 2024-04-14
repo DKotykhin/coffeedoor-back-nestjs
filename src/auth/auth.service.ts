@@ -148,7 +148,7 @@ export class AuthService {
     const payload: JwtPayload = { email };
     const auth_token = this.jwtService.sign(payload);
     response.cookie('auth_token', auth_token, { httpOnly: true });
-    // console.log('auth_token:', auth_token);
+    console.log('auth_token:', auth_token);
 
     return {
       email,
