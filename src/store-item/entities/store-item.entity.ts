@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { LanguageCode } from '../../database/db.enums';
 import { StoreCategory } from '../../store-category/entities/store-category.entity';
+import { StoreItemImage } from '../../store-item-image/entities/store-item-image.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class StoreItem {
@@ -57,9 +60,6 @@ export class StoreItem {
   @Column({ nullable: true })
   weight: number;
 
-  @Column({ array: true, nullable: true })
-  images: string;
-
   @Column({ default: false })
   hidden: boolean;
 
@@ -71,4 +71,10 @@ export class StoreItem {
     nullable: false,
   })
   category: StoreCategory;
+
+  @Exclude()
+  @OneToMany(() => StoreItemImage, (image) => image.storeItem, {
+    onDelete: 'CASCADE',
+  })
+  images: StoreItemImage[];
 }

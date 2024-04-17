@@ -46,10 +46,6 @@ export class UpdateStoreItemDto {
   weight: number;
 
   @IsOptional()
-  @IsString({ each: true })
-  images: string[];
-
-  @IsOptional()
   @IsBoolean()
   toOrder: boolean;
 

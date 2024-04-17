@@ -3,10 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 import { LanguageCode } from '../database/db.enums';
+import { StoreItemImage } from '../store-item-image/entities/store-item-image.entity';
+import { StoreItemWithImageUrl } from '../store-item/dto/store-item-with-imageUrl.dto';
+import { StoreItemImageService } from '../store-item-image/store-item-image.service';
 import { StoreCategory } from './entities/store-category.entity';
 import { CreateStoreCategoryDto } from './dto/create-store-category.dto';
 import { UpdateStoreCategoryDto } from './dto/update-store-category.dto';
-import { BaseEntity } from 'src/database/base.entity';
 
 @Injectable()
 export class StoreCategoryService {
@@ -14,16 +16,17 @@ export class StoreCategoryService {
     @InjectRepository(StoreCategory)
     private readonly storeCategoryRepository: Repository<StoreCategory>,
     private readonly entityManager: EntityManager,
+    private readonly storeItemImageService: StoreItemImageService,
   ) {}
 
   async findByLanguage(language: LanguageCode): Promise<StoreCategory[]> {
     try {
-      return await this.storeCategoryRepository.find({
+      const store = await this.storeCategoryRepository.find({
         where: {
           language,
           hidden: false,
         },
-        relations: ['storeItems'],
+        relations: ['storeItems', 'storeItems.images'],
         order: {
           position: 'ASC',
           storeItems: {
@@ -31,6 +34,23 @@ export class StoreCategoryService {
           },
         },
       });
+      await Promise.all(
+        store.map(async (category) => {
+          category.storeItems = await Promise.all(
+            category.storeItems.map(async (item: StoreItemWithImageUrl) => {
+              item.imageUrl = await Promise.all(
+                item.images.map(async (image: StoreItemImage) => {
+                  return await this.storeItemImageService.getImageUrl(
+                    image.image,
+                  );
+                }),
+              );
+              return item;
+            }),
+          );
+        }),
+      );
+      return store;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
@@ -39,7 +59,7 @@ export class StoreCategoryService {
   async findAll(): Promise<StoreCategory[]> {
     try {
       return await this.storeCategoryRepository.find({
-        relations: ['storeItems'],
+        relations: ['storeItems', 'storeItems.images'],
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
@@ -50,7 +70,7 @@ export class StoreCategoryService {
     try {
       return await this.storeCategoryRepository.findOne({
         where: { id },
-        relations: ['storeItems'],
+        relations: ['storeItems', 'storeItems.images'],
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
@@ -60,11 +80,11 @@ export class StoreCategoryService {
   async create(
     createStoreCategoryDto: CreateStoreCategoryDto,
   ): Promise<StoreCategory> {
-    const storeCategory = new StoreCategory(
-      createStoreCategoryDto as Partial<BaseEntity>,
-    );
     try {
-      return await this.entityManager.save('StoreCategory', storeCategory);
+      return await this.entityManager.save(
+        StoreCategory,
+        createStoreCategoryDto,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.FORBIDDEN);
     }

@@ -39,11 +39,9 @@ export class StoreItemService {
 
   async create(createStoreItemDto: CreateStoreItemDto): Promise<StoreItem> {
     try {
-      const { images, ...rest } = createStoreItemDto;
       return await this.entityManager.save(StoreItem, {
-        ...rest,
+        ...createStoreItemDto,
         category: { id: createStoreItemDto.categoryId },
-        images: images as unknown as string,
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.FORBIDDEN);
@@ -55,7 +53,6 @@ export class StoreItemService {
     updateStoreItemDto: UpdateStoreItemDto,
   ): Promise<StoreItem> {
     try {
-      const { images, ...rest } = updateStoreItemDto;
       return await this.entityManager.transaction(async (manager) => {
         const storeItem = await manager.findOne(StoreItem, { where: { slug } });
         if (!storeItem) {
@@ -63,8 +60,7 @@ export class StoreItemService {
         }
         return await manager.save(StoreItem, {
           ...storeItem,
-          ...rest,
-          images: images as unknown as string,
+          ...updateStoreItemDto,
         });
       });
     } catch (error) {

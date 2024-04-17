@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -21,6 +23,7 @@ import { CreateStoreCategoryDto } from './dto/create-store-category.dto';
 import { UpdateStoreCategoryDto } from './dto/update-store-category.dto';
 
 @Controller('all-store')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AllStoreController {
   constructor(private readonly storeCategoryService: StoreCategoryService) {}
 

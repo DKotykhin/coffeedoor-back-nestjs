@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from 'typeorm';
 
 import { StoreCategoryService } from './store-category.service';
+import { StoreItemImageService } from '../store-item-image/store-item-image.service';
 
 describe('StoreCategoryService', () => {
   let service: StoreCategoryService;
@@ -16,6 +17,10 @@ describe('StoreCategoryService', () => {
         },
         {
           provide: EntityManager,
+          useValue: {},
+        },
+        {
+          provide: StoreItemImageService,
           useValue: {},
         },
       ],

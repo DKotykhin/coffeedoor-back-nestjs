@@ -7,10 +7,11 @@ import {
   StoreCategoryController,
 } from './store-category.controller';
 import { StoreCategory } from './entities/store-category.entity';
+import { StoreItemImageService } from '../store-item-image/store-item-image.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([StoreCategory])],
   controllers: [StoreCategoryController, AllStoreController],
-  providers: [StoreCategoryService],
+  providers: [StoreCategoryService, StoreItemImageService],
 })
 export class StoreCategoryModule {}

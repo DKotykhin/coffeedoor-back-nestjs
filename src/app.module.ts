@@ -11,6 +11,7 @@ import { AvatarModule } from './avatar/avatar.module';
 import { StoreCategoryModule } from './store-category/store-category.module';
 import { StoreItemModule } from './store-item/store-item.module';
 import { validate } from './utils/env.validator';
+import { StoreItemImageModule } from './store-item-image/store-item-image.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { validate } from './utils/env.validator';
     AvatarModule,
     StoreCategoryModule,
     StoreItemModule,
+    StoreItemImageModule,
   ],
   controllers: [],
   providers: [],
