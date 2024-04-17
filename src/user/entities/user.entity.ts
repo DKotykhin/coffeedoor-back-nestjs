@@ -1,4 +1,5 @@
 import { Column, Entity, OneToOne } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { BaseEntity } from '../../database/base.entity';
 import { RoleTypes } from '../../database/db.enums';
@@ -7,13 +8,14 @@ import { ResetPassword } from '../../auth/entities/reset-password.entity';
 
 @Entity()
 export class User extends BaseEntity {
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column({ nullable: true })
   userName: string;
 
   @Column({ nullable: true })
+  @Exclude()
   passwordHash: string;
 
   @Column({ nullable: true })

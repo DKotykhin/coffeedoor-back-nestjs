@@ -6,6 +6,8 @@ import {
   Get,
   Param,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -17,6 +19,7 @@ import { GetUser } from './get-user.decorator';
 import { StatusResponseDto } from './dto/status-response.dto';
 
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

@@ -57,7 +57,9 @@ export class MenuCategoryService {
     }
   }
 
-  async create(createMenuCategoryDto: CreateMenuCategoryDto) {
+  async create(
+    createMenuCategoryDto: CreateMenuCategoryDto,
+  ): Promise<MenuCategory> {
     const menuCategory = new MenuCategory(createMenuCategoryDto);
     try {
       return await this.entityManager.save('MenuCategory', menuCategory);

@@ -79,18 +79,8 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    const { address, avatarUrl, id, isVerified, phoneNumber, role } = user;
 
-    return {
-      email,
-      address,
-      avatarUrl,
-      id,
-      isVerified,
-      phoneNumber,
-      userName,
-      role,
-    };
+    return user;
   }
 
   async signIn(
@@ -104,9 +94,10 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const { email, passwordHash, avatarUrl } = user;
     await PasswordHash.compare(
       signInDto.password,
-      user.passwordHash,
+      passwordHash,
       'Incorrect login or password',
     );
 
@@ -114,7 +105,7 @@ export class AuthService {
       if (user.emailConfirm?.expiredAt < new Date()) {
         const token = cryptoToken();
         this.mailSenderService.sendMail({
-          to: user.email,
+          to: email,
           subject: 'Email confirmation',
           html: `
                   <h2>Please, follow the link to confirm your email</h2>
@@ -131,35 +122,16 @@ export class AuthService {
       );
     }
 
-    if (user.avatarUrl) {
-      user.avatarUrl = await this.avatarService.getImageUrl(user.avatarUrl);
+    if (avatarUrl) {
+      user.avatarUrl = await this.avatarService.getImageUrl(avatarUrl);
     }
-    const {
-      email,
-      address,
-      avatarUrl,
-      id,
-      isVerified,
-      phoneNumber,
-      userName,
-      role,
-    } = user;
 
     const payload: JwtPayload = { email };
     const auth_token = this.jwtService.sign(payload);
     response.cookie('auth_token', auth_token, { httpOnly: true });
     console.log('auth_token:', auth_token);
 
-    return {
-      email,
-      address,
-      avatarUrl,
-      id,
-      isVerified,
-      phoneNumber,
-      userName,
-      role,
-    };
+    return user;
   }
 
   async confirmEmail(token: string): Promise<StatusResponseDto> {
