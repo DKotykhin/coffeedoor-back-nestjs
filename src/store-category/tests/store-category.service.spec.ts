@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from 'typeorm';
 
-import { UserService } from './user.service';
-import { AvatarService } from '../avatar/avatar.service';
+import { StoreCategoryService } from '../store-category.service';
+import { StoreItemImageService } from '../../store-item-image/store-item-image.service';
 
-describe('UserService', () => {
-  let service: UserService;
+describe('StoreCategoryService', () => {
+  let service: StoreCategoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserService,
+        StoreCategoryService,
         {
-          provide: 'UserRepository',
+          provide: 'StoreCategoryRepository',
           useValue: {},
         },
         {
@@ -20,13 +20,13 @@ describe('UserService', () => {
           useValue: {},
         },
         {
-          provide: AvatarService,
+          provide: StoreItemImageService,
           useValue: {},
         },
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    service = module.get<StoreCategoryService>(StoreCategoryService);
   });
 
   it('should be defined', () => {

@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from 'typeorm';
 
-import { LanguageCode } from '../database/db.enums';
-import { MenuCategoryService } from './menu-category.service';
-import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
-import { MenuCategory } from './entities/menu-category.entity';
+import { LanguageCode } from '../../database/db.enums';
+import { MenuCategoryService } from '../menu-category.service';
+import { CreateMenuCategoryDto } from '../dto/create-menu-category.dto';
+import { MenuCategory } from '../entities/menu-category.entity';
 
 const mockMenuCategoryItem: Partial<MenuCategory> = {
   id: '1',

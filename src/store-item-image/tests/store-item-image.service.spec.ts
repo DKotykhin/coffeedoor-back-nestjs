@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 
-import { StoreItemImageService } from './store-item-image.service';
+import { StoreItemImageService } from '../store-item-image.service';
 
 describe('StoreItemImageService', () => {
   let service: StoreItemImageService;

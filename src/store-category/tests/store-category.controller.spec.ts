@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { StoreCategoryController } from './store-category.controller';
-import { StoreCategoryService } from './store-category.service';
+import { StoreCategoryController } from '../store-category.controller';
+import { StoreCategoryService } from '../store-category.service';
 
 describe('StoreCategoryController', () => {
   let controller: StoreCategoryController;

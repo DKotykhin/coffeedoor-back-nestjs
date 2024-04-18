@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { StoreItemImageController } from './store-item-image.controller';
-import { StoreItemImageService } from './store-item-image.service';
+import { StoreItemImageController } from '../store-item-image.controller';
+import { StoreItemImageService } from '../store-item-image.service';
 
 describe('StoreItemImageController', () => {
   let controller: StoreItemImageController;
