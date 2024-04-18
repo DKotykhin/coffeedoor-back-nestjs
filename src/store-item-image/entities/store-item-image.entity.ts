@@ -8,7 +8,7 @@ export class StoreItemImage extends BaseEntity {
   @Column()
   image: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 1 })
   position: number;
 
   @ManyToOne(() => StoreItem, (item) => item.images, { onDelete: 'CASCADE' })

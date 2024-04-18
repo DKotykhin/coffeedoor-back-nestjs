@@ -14,6 +14,10 @@ describe('StoreItemImageService', () => {
           provide: ConfigService,
           useValue: { get: () => undefined },
         },
+        {
+          provide: 'StoreItemImageRepository',
+          useValue: {},
+        },
       ],
     }).compile();
 

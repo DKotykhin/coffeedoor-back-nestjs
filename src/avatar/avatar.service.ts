@@ -37,12 +37,15 @@ export class AvatarService {
       const fileName = id + '-' + avatar.fieldname + '.webp';
       const avatarPath = `avatar/${fileName}`;
 
-      const file = await sharp(avatar.buffer).webp().resize(200).toBuffer();
+      const fileBuffer = await sharp(avatar.buffer)
+        .webp()
+        .resize(200)
+        .toBuffer();
 
       const params = {
         Bucket: this.configService.get('AWS_BUCKET_NAME'),
         Key: avatarPath,
-        Body: file,
+        Body: fileBuffer,
         ContentType: 'image/webp',
       };
       const command = new PutObjectCommand(params);
