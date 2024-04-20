@@ -5,7 +5,7 @@ import * as sgMail from '@sendgrid/mail';
 @Injectable()
 export class MailSenderService {
   constructor(private readonly configService: ConfigService) {}
-  private logger = new Logger(MailSenderService.name);
+  protected readonly logger = new Logger(MailSenderService.name);
   async sendMail({
     to,
     subject,

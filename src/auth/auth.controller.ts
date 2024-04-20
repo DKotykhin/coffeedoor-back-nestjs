@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { EmailDto, PasswordDto, SignInDto, SignUpDto } from './dto/auth.dto';
-import { GetUser } from './get-user.decorator';
+import { GetUser } from './decorators/get-user.decorator';
 import { StatusResponseDto } from './dto/status-response.dto';
 
 @Controller('auth')

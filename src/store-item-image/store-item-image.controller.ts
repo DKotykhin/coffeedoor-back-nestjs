@@ -15,9 +15,9 @@ import {
   ParseFilePipe,
 } from '@nestjs/common/pipes';
 
-import { HasRoles } from '../auth/roles.decorator';
+import { HasRoles } from '../auth/decorators/roles.decorator';
 import { RoleTypes } from '../database/db.enums';
-import { RolesGuard } from '../auth/roles.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { StoreItemImageService } from './store-item-image.service';
 import { FormDataInputDto } from './dto/formData-input.dto';
 

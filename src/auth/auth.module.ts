@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ResetPassword } from './entities/reset-password.entity';
 import { EmailConfirm } from './entities/email-confirm.entity';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [

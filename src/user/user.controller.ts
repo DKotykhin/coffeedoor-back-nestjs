@@ -16,7 +16,7 @@ import {
   ParseFilePipe,
 } from '@nestjs/common/pipes';
 
-import { GetUser } from '../auth/get-user.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 import { StatusResponseDto } from '../auth/dto/status-response.dto';
 import { PasswordDto } from '../auth/dto/auth.dto';
 import { UserService } from './user.service';

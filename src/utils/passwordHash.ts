@@ -18,7 +18,7 @@ export class PasswordHash {
   ) => {
     const isValidPass = await bcrypt.compare(password, passwordHash);
     if (!isValidPass) {
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(message, HttpStatus.UNAUTHORIZED);
     }
     return isValidPass;
   };

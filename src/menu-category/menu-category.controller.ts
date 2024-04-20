@@ -12,8 +12,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { LanguageCode, RoleTypes } from '../database/db.enums';
-import { HasRoles } from '../auth/roles.decorator';
-import { RolesGuard } from '../auth/roles.guard';
+import { HasRoles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { MenuCategoryService } from './menu-category.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';

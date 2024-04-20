@@ -11,15 +11,15 @@ export class PasswordDto {
 }
 export class EmailDto {
   @IsEmail()
-  readonly email: string;
+  email: string;
 }
 export class SignInDto extends PasswordDto {
   @IsEmail()
-  readonly email: string;
+  email: string;
 }
 
 export class SignUpDto extends SignInDto {
   @IsString()
   @Length(2, 30, { message: 'Name must be at least 2 characters' })
-  readonly userName: string;
+  userName: string;
 }

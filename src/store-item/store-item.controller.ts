@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { HasRoles } from '../auth/roles.decorator';
+import { HasRoles } from '../auth/decorators/roles.decorator';
 import { RoleTypes } from '../database/db.enums';
-import { RolesGuard } from '../auth/roles.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { StoreItemService } from './store-item.service';
 import { StoreItem } from './entities/store-item.entity';
 import { CreateStoreItemDto } from './dto/create-store-item.dto';
