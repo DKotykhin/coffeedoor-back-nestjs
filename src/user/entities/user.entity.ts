@@ -1,10 +1,11 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { BaseEntity } from '../../database/base.entity';
 import { RoleTypes } from '../../database/db.enums';
 import { EmailConfirm } from '../../auth/entities/email-confirm.entity';
 import { ResetPassword } from '../../auth/entities/reset-password.entity';
+import { UserOrder } from '../../user-order/entities/user-order.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -42,6 +43,9 @@ export class User extends BaseEntity {
     cascade: true,
   })
   resetPassword: ResetPassword;
+
+  @OneToMany(() => UserOrder, (userOrder) => userOrder.user)
+  userOrders: UserOrder[];
 
   constructor(partial: Partial<User>) {
     super(partial);

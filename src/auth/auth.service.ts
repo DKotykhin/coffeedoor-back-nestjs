@@ -4,13 +4,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import * as crypto from 'crypto';
 
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { AvatarService } from '../avatar/avatar.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { PasswordHash } from '../utils/passwordHash';
-import { cryptoToken } from '../utils/cryptoToken';
 import { EmailDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { JwtPayload } from './dto/jwtPayload.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
@@ -38,6 +38,14 @@ export class AuthService {
     return user;
   }
 
+  private cryptoToken(): string {
+    const buffer = crypto.randomBytes(16);
+    if (!buffer)
+      throw new HttpException('Token error', HttpStatus.INTERNAL_SERVER_ERROR);
+    const token = buffer.toString('hex');
+    return token;
+  }
+
   async signUp(signUpDto: SignUpDto): Promise<Partial<User>> {
     const { email, password, userName } = signUpDto;
     const candidate = await this.userService.findByEmail(email);
@@ -47,25 +55,25 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const passwordHash = await PasswordHash.create(password);
-    const user = await this.userService.create({
-      email,
-      userName,
-      passwordHash,
-    });
-    const token = cryptoToken();
-    this.mailSenderService.sendMail({
-      to: user.email,
-      subject: 'Email confirmation',
-      html: `
-              <h2>Please, follow the link to set new password</h2>
-              <h4>If you don't restore your password ignore this mail</h4>
-              <hr/>
-              <br/>
-              <a href='${this.configService.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
-            `,
-    });
     try {
+      const passwordHash = await PasswordHash.create(password);
+      const user = await this.userService.create({
+        email,
+        userName,
+        passwordHash,
+      });
+      const token = this.cryptoToken();
+      await this.mailSenderService.sendMail({
+        to: user.email,
+        subject: 'Email confirmation',
+        html: `
+                <h2>Please, follow the link to set new password</h2>
+                <h4>If you don't restore your password ignore this mail</h4>
+                <hr/>
+                <br/>
+                <a href='${this.configService.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
+              `,
+      });
       await this.emailConfirmRepository.save({
         user,
         token,
@@ -73,14 +81,13 @@ export class AuthService {
           new Date().getTime() + 1000 * 60 * 60 * 24,
         ).toISOString(),
       });
+      return user;
     } catch (error) {
       throw new HttpException(
-        'Error while saving email confirmation token',
+        error.message || 'Error while creating user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-
-    return user;
   }
 
   async signIn(
@@ -103,7 +110,7 @@ export class AuthService {
 
     if (!user.isVerified) {
       if (user.emailConfirm?.expiredAt < new Date()) {
-        const token = cryptoToken();
+        const token = this.cryptoToken();
         this.mailSenderService.sendMail({
           to: email,
           subject: 'Email confirmation',
@@ -173,7 +180,7 @@ export class AuthService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    const token = cryptoToken();
+    const token = this.cryptoToken();
     this.mailSenderService.sendMail({
       to: user.email,
       subject: 'Reset password',

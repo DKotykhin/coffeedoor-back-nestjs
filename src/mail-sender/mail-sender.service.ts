@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class MailSenderService {
   constructor(private readonly configService: ConfigService) {}
+  private logger = new Logger(MailSenderService.name);
   async sendMail({
     to,
     subject,
@@ -23,7 +24,9 @@ export class MailSenderService {
     };
 
     try {
-      return await sgMail.send(msg);
+      const response = await sgMail.send(msg);
+      this.logger.log(`Email sent to ${to}`);
+      return response;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

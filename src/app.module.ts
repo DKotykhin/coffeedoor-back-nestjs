@@ -12,6 +12,8 @@ import { StoreCategoryModule } from './store-category/store-category.module';
 import { StoreItemModule } from './store-item/store-item.module';
 import { validate } from './utils/env.validator';
 import { StoreItemImageModule } from './store-item-image/store-item-image.module';
+import { UserOrderModule } from './user-order/user-order.module';
+import { OrderItemModule } from './order-item/order-item.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { StoreItemImageModule } from './store-item-image/store-item-image.module
     StoreCategoryModule,
     StoreItemModule,
     StoreItemImageModule,
+    UserOrderModule,
+    OrderItemModule,
   ],
   controllers: [],
   providers: [],
