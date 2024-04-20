@@ -1,7 +1,6 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { DeliveryWay } from '../../database/db.enums';
-import { User } from '../../user/entities/user.entity';
 
 export class CreateUserOrderDto {
   @IsEnum(DeliveryWay)
@@ -24,5 +23,6 @@ export class CreateUserOrderDto {
   @IsNumber()
   totalQuantity: number;
 
-  userId: User;
+  @IsString()
+  userId: string;
 }
