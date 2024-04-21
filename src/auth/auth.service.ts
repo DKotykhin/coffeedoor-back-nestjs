@@ -94,16 +94,17 @@ export class AuthService {
     signInDto: SignInDto,
     response: Response,
   ): Promise<Partial<User>> {
-    const user = await this.userService.findByEmail(signInDto.email);
+    const { email, password } = signInDto;
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new HttpException(
         'Incorrect login or password',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const { email, passwordHash, avatarUrl } = user;
+    const { passwordHash, avatarUrl } = user;
     await PasswordHash.compare(
-      signInDto.password,
+      password,
       passwordHash,
       'Incorrect login or password',
     );

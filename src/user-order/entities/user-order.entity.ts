@@ -7,6 +7,12 @@ import { OrderItem } from '../../order-item/entities/order-item.entity';
 
 @Entity()
 export class UserOrder extends BaseEntity {
+  @Column({ nullable: true })
+  userName: string;
+
+  @Column({ nullable: true })
+  phoneNumber: string;
+
   @Column({ type: 'enum', enum: DeliveryWay, default: DeliveryWay.PICKUP })
   deliveryWay: DeliveryWay;
 

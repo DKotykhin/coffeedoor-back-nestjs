@@ -34,6 +34,12 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   SG_EMAIL_ADDRESS: string;
+
+  @IsNotEmpty()
+  TELEGRAM_TOKEN: string;
+
+  @IsNotEmpty()
+  TELEGRAM_CHAT_ID: string;
 }
 
 export function validate(config: Record<string, unknown>) {
