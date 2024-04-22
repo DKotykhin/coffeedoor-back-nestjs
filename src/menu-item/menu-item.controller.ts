@@ -18,6 +18,7 @@ import { MenuItemService } from './menu-item.service';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
 import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
 import { MenuItem } from './entities/menu-item.entity';
+import { ChangeMenuItemPositionDto } from './dto/change-menu-item-position.dto';
 
 @Controller('menu-items')
 @HasRoles(RoleTypes.ADMIN, RoleTypes.SUBADMIN)
@@ -42,12 +43,19 @@ export class MenuItemController {
     return this.menuItemService.create(createMenuItemDto);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(
     @Param('id') id: string,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
   ): Promise<MenuItem> {
     return this.menuItemService.update(id, updateMenuItemDto);
+  }
+
+  @Patch('change-position')
+  changePosition(
+    @Body() changeMenuItemPositionDto: ChangeMenuItemPositionDto,
+  ): Promise<MenuItem> {
+    return this.menuItemService.changePosition(changeMenuItemPositionDto);
   }
 
   @Delete(':id')

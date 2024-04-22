@@ -2,7 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 import { OrderItemService } from '../order-item/order-item.service';
 import { CreateOrderItemDto } from '../order-item/dto/create-order-item.dto';
@@ -16,6 +18,7 @@ export class UserOrderService {
     private readonly userOrderRepository: Repository<UserOrder>,
     private readonly orderItemService: OrderItemService,
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {}
 
   async findOrdersByUserId(userId: string): Promise<UserOrder[]> {
@@ -86,11 +89,22 @@ export class UserOrderService {
 
     const averageSum = Math.round(totalSum / totalQuantity);
 
-    await axios.post(URL, {
-      chat_id: CHAT_ID,
-      parse_mode: 'html',
-      text: message,
-    });
+    await firstValueFrom(
+      this.httpService
+        .post(URL, {
+          chat_id: CHAT_ID,
+          parse_mode: 'html',
+          text: message,
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(
+              error.response.data,
+              HttpStatus.BAD_REQUEST,
+            );
+          }),
+        ),
+    );
 
     return { totalSum, totalQuantity, averageSum };
   }

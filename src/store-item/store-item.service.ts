@@ -31,7 +31,43 @@ export class StoreItemService {
     try {
       return await this.storeItemRepository.findOne({
         where: { slug },
+        relations: ['category'],
       });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async findBySlugWithRecommendations(
+    slug: string,
+  ): Promise<{ storeItem: StoreItem; recommendationList: StoreItem[] }> {
+    try {
+      const storeItem = await this.findBySlug(slug);
+      const itemsByCategory = await this.findAllByCategoryId(
+        storeItem.category.id,
+      );
+
+      const copyArr = itemsByCategory?.slice();
+      const itemIndex = copyArr.findIndex(
+        (item) => item.slug === storeItem.slug,
+      );
+      copyArr.splice(itemIndex, 1);
+      const recommendationList = [];
+      const n = 2;
+      if (n < copyArr.length) {
+        for (let i = 0; i < n; i++) {
+          const randomIndex = Math.floor(Math.random() * copyArr.length);
+          recommendationList.push(copyArr[randomIndex]);
+          copyArr.splice(randomIndex, 1);
+        }
+      } else {
+        recommendationList.push(...copyArr);
+      }
+
+      return {
+        storeItem,
+        recommendationList,
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

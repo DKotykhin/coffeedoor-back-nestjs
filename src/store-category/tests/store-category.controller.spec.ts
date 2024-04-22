@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { StoreCategoryController } from '../store-category.controller';
+import {
+  AllStoreController,
+  StoreCategoryController,
+} from '../store-category.controller';
 import { StoreCategoryService } from '../store-category.service';
 
 describe('StoreCategoryController', () => {
@@ -8,7 +11,7 @@ describe('StoreCategoryController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [StoreCategoryController],
+      controllers: [StoreCategoryController, AllStoreController],
       providers: [StoreCategoryService],
     })
       .overrideProvider(StoreCategoryService)

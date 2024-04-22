@@ -18,6 +18,7 @@ import { MenuCategoryService } from './menu-category.service';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
+import { ChangeMenuCategoryPositionDto } from './dto/change-menu-category-position.dto';
 
 @Controller('all-menu')
 export class AllMenuController {
@@ -54,12 +55,21 @@ export class MenuCategoryController {
     return this.menuCategoryService.create(createMenuCategoryDto);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ): Promise<MenuCategory> {
     return this.menuCategoryService.update(id, updateMenuCategoryDto);
+  }
+
+  @Patch('change-position')
+  changePosition(
+    @Body() changeMenuCategoryPositionDto: ChangeMenuCategoryPositionDto,
+  ): Promise<MenuCategory> {
+    return this.menuCategoryService.changePosition(
+      changeMenuCategoryPositionDto,
+    );
   }
 
   @Delete(':id')

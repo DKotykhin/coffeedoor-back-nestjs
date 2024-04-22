@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 
 import { UserOrderService } from '../user-order.service';
 import { OrderItemService } from '../../order-item/order-item.service';
@@ -17,6 +18,10 @@ describe('UserOrderService', () => {
         },
         {
           provide: ConfigService,
+          useValue: {},
+        },
+        {
+          provide: HttpService,
           useValue: {},
         },
         {

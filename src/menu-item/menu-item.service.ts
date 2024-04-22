@@ -5,6 +5,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
 import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
 import { MenuItem } from './entities/menu-item.entity';
+import { ChangeMenuItemPositionDto } from './dto/change-menu-item-position.dto';
 
 @Injectable()
 export class MenuItemService {
@@ -57,6 +58,42 @@ export class MenuItemService {
         id,
         ...updateMenuItemDto,
       });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async changePosition(
+    changeMenuItemPosition: ChangeMenuItemPositionDto,
+  ): Promise<MenuItem> {
+    try {
+      const { menuItemId, oldPosition, newPosition } = changeMenuItemPosition;
+      const menuItem = await this.menuItemRepository.findOneOrFail({
+        where: { id: menuItemId },
+        relations: ['category'],
+      });
+      const updatedMenuItem = await this.menuItemRepository.save({
+        ...menuItem,
+        position: newPosition,
+      });
+
+      const { language, category } = menuItem;
+      await this.menuItemRepository
+        .createQueryBuilder()
+        .update(MenuItem)
+        .set({
+          position: () => `position ${oldPosition < newPosition ? '-' : '+'} 1`,
+        })
+        .where('id != :id', { id: menuItemId })
+        .andWhere('language = :language', { language })
+        .andWhere('categoryId = :categoryId', { categoryId: category.id })
+        .andWhere('position BETWEEN :minPosition AND :maxPosition', {
+          minPosition: Math.min(oldPosition, newPosition),
+          maxPosition: Math.max(oldPosition, newPosition),
+        })
+        .execute();
+
+      return updatedMenuItem;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

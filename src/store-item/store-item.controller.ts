@@ -19,6 +19,18 @@ import { StoreItem } from './entities/store-item.entity';
 import { CreateStoreItemDto } from './dto/create-store-item.dto';
 import { UpdateStoreItemDto } from './dto/update-store-item.dto';
 
+@Controller('store-item-with-recommendations')
+export class StoreItemWithRecommendationsController {
+  constructor(private readonly storeItemService: StoreItemService) {}
+
+  @Get(':slug')
+  findBySlugWithRecommendations(
+    @Param('slug') slug: string,
+  ): Promise<{ storeItem: StoreItem; recommendationList: StoreItem[] }> {
+    return this.storeItemService.findBySlugWithRecommendations(slug);
+  }
+}
+
 @Controller('store-items')
 @HasRoles(RoleTypes.ADMIN, RoleTypes.SUBADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)

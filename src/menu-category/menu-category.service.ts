@@ -6,6 +6,7 @@ import { LanguageCode } from '../database/db.enums';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
+import { ChangeMenuCategoryPositionDto } from './dto/change-menu-category-position.dto';
 
 @Injectable()
 export class MenuCategoryService {
@@ -77,6 +78,38 @@ export class MenuCategoryService {
       const menuCategory = await this.findById(id);
       Object.assign(menuCategory, updateMenuCategoryDto);
       return await this.entityManager.save('MenuCategory', menuCategory);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async changePosition(
+    changeMenuCategoryPosition: ChangeMenuCategoryPositionDto,
+  ): Promise<MenuCategory> {
+    try {
+      const { menuCategoryId, oldPosition, newPosition } =
+        changeMenuCategoryPosition;
+      const menuCategory = await this.menuCategoryRepository.findOneOrFail({
+        where: { id: menuCategoryId },
+      });
+      const updatedMenuCategory = await this.menuCategoryRepository.save({
+        ...menuCategory,
+        position: newPosition,
+      });
+      await this.menuCategoryRepository
+        .createQueryBuilder()
+        .update(MenuCategory)
+        .set({
+          position: () => `position ${oldPosition < newPosition ? '-' : '+'} 1`,
+        })
+        .where('id != :id', { id: menuCategoryId })
+        .andWhere('language = :language', { language: menuCategory.language })
+        .andWhere('position BETWEEN :minPosition AND :maxPosition', {
+          minPosition: Math.min(oldPosition, newPosition),
+          maxPosition: Math.max(oldPosition, newPosition),
+        })
+        .execute();
+      return updatedMenuCategory;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
