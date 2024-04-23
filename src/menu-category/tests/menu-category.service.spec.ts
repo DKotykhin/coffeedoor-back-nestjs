@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
 import { LanguageCode } from '../../database/db.enums';
@@ -19,6 +20,8 @@ const mockMenuCategoryItem: Partial<MenuCategory> = {
 const mockMenuCategoryRepository = () => ({
   find: jest.fn(() => []),
   findOne: jest.fn((id) => ({ id, ...mockMenuCategoryItem })),
+  findOneOrFail: jest.fn((id) => ({ id, ...mockMenuCategoryItem })),
+  findById: jest.fn((id) => ({ id, ...mockMenuCategoryItem })),
   save: jest.fn((_, item) => item),
   delete: jest.fn((id: string) => id),
 });
@@ -48,9 +51,23 @@ describe('MenuCategoryService', () => {
     expect(service).toBeDefined();
   });
 
+  it('should return an array of menu categories by language', async () => {
+    const result = await service.findByLanguage(LanguageCode.EN);
+    expect(result).toEqual([]);
+  });
+
   it('should return an array of menu categories', async () => {
     const result = await service.findAll();
     expect(result).toEqual([]);
+  });
+
+  it('should throw an error when return an array of menu categories', async () => {
+    jest
+      .spyOn(service, 'findAll')
+      .mockRejectedValue(new HttpException('Not found', HttpStatus.NOT_FOUND));
+    await expect(service.findAll()).rejects.toEqual(
+      new HttpException('Not found', HttpStatus.NOT_FOUND),
+    );
   });
 
   it('should return a single menu category', async () => {
@@ -68,6 +85,15 @@ describe('MenuCategoryService', () => {
     };
     const result = await service.create(mockCreateMenuCategoryDto);
     expect(result).toEqual(mockCreateMenuCategoryDto);
+  });
+
+  it('should update a menu category', async () => {
+    const id = '1';
+    const result = await service.update(
+      id,
+      mockMenuCategoryItem as MenuCategory,
+    );
+    expect(result).toEqual({ id, ...mockMenuCategoryItem });
   });
 
   it('should delete a menu category', async () => {
