@@ -56,6 +56,17 @@ describe('AppController (e2e)', () => {
       authToken = authTokenMatch[1];
   });
 
+  it('should get user by token', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/auth/user')
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(200);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty('email');
+    expect(res.body.email).toBe(credentials.email);
+    expect(res.body.role).toContain(RoleTypes.ADMIN || RoleTypes.SUBADMIN);
+  });
+
   it('should get all menu categories', async () => {
     const res = await request(app.getHttpServer())
       .get('/menu-categories')
@@ -109,5 +120,13 @@ describe('AppController (e2e)', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .expect(200);
     expect(res.body).toStrictEqual({});
+  });
+
+  it('should get user orders', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/user-order')
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(200);
+    expect(res.body).toBeInstanceOf(Array);
   });
 });

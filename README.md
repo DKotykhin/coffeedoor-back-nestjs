@@ -14,7 +14,7 @@ Backend part for CoffeeDoor online shop
 
 -   CRUD for menu categories and menu items based on roles
 -   CRUD for store categories and store items based on roles
--   upload images for store items
+-   upload images for store items using AWS S3 service
 -   role based authentication with JWT strategy and bcrypt for password hash
 -   restore and update password with email token notification
 -   email confirmation for registration

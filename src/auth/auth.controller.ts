@@ -24,7 +24,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/me')
+  @Get('/user')
   getUserByToken(@GetUser() user: Partial<User>): Promise<Partial<User>> {
     return this.authService.getUserByToken(user);
   }
