@@ -37,7 +37,7 @@ export class UserController {
   }
 
   @Delete()
-  remove(@GetUser() user: User): Promise<string> {
+  remove(@GetUser() user: User): Promise<StatusResponseDto> {
     return this.userService.remove(user.id);
   }
 

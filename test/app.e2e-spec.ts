@@ -72,8 +72,7 @@ describe('AppController (e2e)', () => {
       .send(mockMenuCategory)
       .expect(201);
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('title');
-    expect(res.body.title).toBe('Test title');
+    expect(res.body).toHaveProperty('title', 'Test title');
     menuCategoryId = res.body.id;
   });
 
@@ -83,8 +82,7 @@ describe('AppController (e2e)', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .expect(200);
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('title');
-    expect(res.body.title).toBe('Test title');
+    expect(res.body).toHaveProperty('title', 'Test title');
   });
 
   it('should update menu category', async () => {
@@ -94,8 +92,7 @@ describe('AppController (e2e)', () => {
       .send({ ...mockMenuCategory, title: 'Updated test title' })
       .expect(200);
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('title');
-    expect(res.body.title).toBe('Updated test title');
+    expect(res.body).toHaveProperty('title', 'Updated test title');
   });
 
   it('should delete menu category', async () => {
@@ -103,7 +100,7 @@ describe('AppController (e2e)', () => {
       .delete(`/menu-categories/${menuCategoryId}`)
       .set('Authorization', `Bearer ${authToken}`)
       .expect(200);
-    expect(res.text).toBe(menuCategoryId);
+    expect(res.body).toHaveProperty('status', true);
   });
 
   it('should not get menu category by id', async () => {

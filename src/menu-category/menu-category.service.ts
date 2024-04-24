@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 import { LanguageCode } from '../database/db.enums';
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
+
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { MenuCategory } from './entities/menu-category.entity';
@@ -115,13 +117,16 @@ export class MenuCategoryService {
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<StatusResponseDto> {
     try {
       const result = await this.menuCategoryRepository.delete(id);
       if (result.affected === 0) {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
-      return id;
+      return {
+        status: true,
+        message: `Menu category ${id} successfully deleted`,
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

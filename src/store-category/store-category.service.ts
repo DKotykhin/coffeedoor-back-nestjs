@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 import { LanguageCode } from '../database/db.enums';
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
 import { StoreItemImage } from '../store-item-image/entities/store-item-image.entity';
 import { StoreItemWithImageUrl } from '../store-item/dto/store-item-with-imageUrl.dto';
 import { StoreItemImageService } from '../store-item-image/store-item-image.service';
@@ -103,13 +104,16 @@ export class StoreCategoryService {
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<StatusResponseDto> {
     try {
       const result = await this.storeCategoryRepository.delete(id);
       if (result.affected === 0) {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
-      return id;
+      return {
+        status: true,
+        message: `Store category ${id} successfully deleted`,
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

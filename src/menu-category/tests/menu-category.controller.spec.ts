@@ -48,8 +48,8 @@ const mockMenuCategoryService = {
       id: dto.menuCategoryId,
     };
   }),
-  remove: jest.fn((id: string) => {
-    return { id };
+  remove: jest.fn(() => {
+    return { status: true };
   }),
 };
 
@@ -163,6 +163,6 @@ describe('MenuCategoryController', () => {
   });
 
   it('should remove a menu category', async () => {
-    expect(await controller.remove('id')).toEqual({ id: 'id' });
+    expect(await controller.remove('id')).toHaveProperty('status', true);
   });
 });

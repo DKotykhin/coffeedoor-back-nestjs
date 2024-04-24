@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
 import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
 import { MenuItem } from './entities/menu-item.entity';
@@ -99,13 +100,16 @@ export class MenuItemService {
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<StatusResponseDto> {
     try {
       const result = await this.menuItemRepository.delete(id);
       if (result.affected === 0) {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
-      return id;
+      return {
+        status: true,
+        message: `Menu item ${id} successfully deleted`,
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

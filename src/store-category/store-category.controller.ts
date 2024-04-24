@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LanguageCode, RoleTypes } from '../database/db.enums';
 import { HasRoles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
 
 import { StoreCategoryService } from './store-category.service';
 import { StoreCategory } from './entities/store-category.entity';
@@ -67,7 +68,7 @@ export class StoreCategoryController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<string> {
+  remove(@Param('id') id: string): Promise<StatusResponseDto> {
     return this.storeCategoryService.remove(id);
   }
 }

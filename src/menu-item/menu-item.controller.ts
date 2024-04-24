@@ -14,6 +14,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { HasRoles } from '../auth/decorators/roles.decorator';
 import { RoleTypes } from '../database/db.enums';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { StatusResponseDto } from '../auth/dto/status-response.dto';
+
 import { MenuItemService } from './menu-item.service';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
 import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
@@ -59,7 +61,7 @@ export class MenuItemController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<string> {
+  remove(@Param('id') id: string): Promise<StatusResponseDto> {
     return this.menuItemService.remove(id);
   }
 }

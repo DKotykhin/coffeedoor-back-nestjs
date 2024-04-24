@@ -99,6 +99,6 @@ describe('MenuCategoryService', () => {
   it('should delete a menu category', async () => {
     const id = '1';
     const result = await service.remove(id);
-    expect(result).toEqual(id);
+    expect(result).toHaveProperty('status', true);
   });
 });
