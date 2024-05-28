@@ -63,5 +63,5 @@ $ npm run test:cov
 
 Dmytro Kotykhin
 -   [Github](https://github.com/DKotykhin)
--   [Web](https://dmytro-kotykhin.space)
+-   [Web](https://dmytro-kotykhin.pp.ua)
 -   [LinkedIn](https://www.linkedin.com/in/dmytro-kotykhin-4683151b)

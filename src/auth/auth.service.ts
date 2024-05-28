@@ -11,11 +11,12 @@ import { AvatarService } from '../avatar/avatar.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { PasswordHash } from '../utils/passwordHash';
+
 import { EmailDto, SignInDto, SignUpDto } from './dto/auth.dto';
+import { StatusResponseDto } from './dto/status-response.dto';
 import { JwtPayload } from './dto/jwtPayload.dto';
 import { EmailConfirm } from './entities/email-confirm.entity';
 import { ResetPassword } from './entities/reset-password.entity';
-import { StatusResponseDto } from './dto/status-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -67,8 +68,9 @@ export class AuthService {
         to: user.email,
         subject: 'Email confirmation',
         html: `
-                <h2>Please, follow the link to set new password</h2>
-                <h4>If you don't restore your password ignore this mail</h4>
+                <h2>Please, follow the link to confirm your email</h2>
+                <h4>The link will expire within <strong>1 hour</strong></h4>
+                <h4>If you don't try to login or register, ignore this mail</h4>
                 <hr/>
                 <br/>
                 <a href='${this.configService.get('FRONTEND_URL')}/confirm-email/${token}'>Link for email confirmation</a>
@@ -78,7 +80,7 @@ export class AuthService {
         user,
         token,
         expiredAt: new Date(
-          new Date().getTime() + 1000 * 60 * 60 * 24,
+          new Date().getTime() + 1000 * 60 * 60,
         ).toISOString(),
       });
       return user;
@@ -117,6 +119,7 @@ export class AuthService {
           subject: 'Email confirmation',
           html: `
                   <h2>Please, follow the link to confirm your email</h2>
+                  <h4>The link will expire within <strong>1 hour</strong></h4>
                   <h4>If you don't try to login or register, ignore this mail</h4>
                   <hr/>
                   <br/>
@@ -187,6 +190,7 @@ export class AuthService {
       subject: 'Reset password',
       html: `
               <h2>Please, follow the link to set new password</h2>
+              <h4>The link will expire within <strong>1 hour</strong></h4>
               <h4>If you don't restore your password ignore this mail</h4>
               <hr/>
               <br/>
@@ -197,7 +201,7 @@ export class AuthService {
       await this.resetPasswordRepository.save({
         user,
         token,
-        expiredAt: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+        expiredAt: new Date(new Date().getTime() + 1000 * 60 * 60),
       });
     } catch (error) {
       throw new HttpException(
